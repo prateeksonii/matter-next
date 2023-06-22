@@ -1,4 +1,5 @@
 import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import "./globals.css";
 
 export const metadata = {
@@ -12,7 +13,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        baseTheme: dark,
+      }}
+    >
       <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
         <head>
           <link rel="preconnect" href="https://rsms.me/" />

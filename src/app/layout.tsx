@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
 export const metadata = {
@@ -11,12 +12,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
-      <head>
-        <link rel="preconnect" href="https://rsms.me/" />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-      </head>
-      <body className="bg-zinc-900">{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
+        <head>
+          <link rel="preconnect" href="https://rsms.me/" />
+          <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+        </head>
+        <body className="bg-zinc-900">{children}</body>
+      </html>
+    </ClerkProvider>
   );
 }

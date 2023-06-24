@@ -14,23 +14,26 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
-
-const formSchema = z.object({
-  name: z.string().min(2).max(50),
-});
+import { insertWorkspaceSchema } from "@/models/workspace";
 
 export default function WorkspaceForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof insertWorkspaceSchema>>({
+    resolver: zodResolver(insertWorkspaceSchema),
     defaultValues: {
       name: "",
     },
   });
+  console.log(form.formState.errors);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof insertWorkspaceSchema>) {
+    console.log("firsheret");
+    const res = await fetch(`/api/workspaces`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
   }
 
   return (

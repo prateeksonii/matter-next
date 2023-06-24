@@ -1,19 +1,21 @@
-import { InferModel } from "drizzle-orm";
+import { InferModel, sql } from "drizzle-orm";
 import {
-  sqliteTable,
-  integer,
-  text,
+  mysqlTable,
+  int,
+  varchar,
   uniqueIndex,
-} from "drizzle-orm/sqlite-core";
+  serial,
+  datetime,
+} from "drizzle-orm/mysql-core";
 
-export const user = sqliteTable(
+export const user = mysqlTable(
   "users",
   {
-    id: integer("id").primaryKey(),
-    clerkId: text("clerk_id").notNull(),
-    firstName: text("first_name").notNull(),
-    lastName: text("last_name").notNull(),
-    email: text("email").notNull(),
+    id: int("id").autoincrement().primaryKey(),
+    clerkId: varchar("clerk_id", { length: 50 }).notNull(),
+    firstName: varchar("first_name", { length: 100 }).notNull(),
+    lastName: varchar("last_name", { length: 100 }).notNull(),
+    email: varchar("email", { length: 255 }).notNull(),
   },
   (users) => ({
     clerkIdx: uniqueIndex("users_clerkIdx").on(users.clerkId),
@@ -21,3 +23,18 @@ export const user = sqliteTable(
 );
 
 export type User = InferModel<typeof user>;
+
+export const workspace = mysqlTable(
+  "workspaces",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    name: varchar("name", { length: 100 }).notNull(),
+    ownerId: int("owner_id")
+      .notNull()
+      .references(() => user.id),
+    createdAt: datetime("created_at").default(sql`NOW()`),
+  },
+  (workspaces) => ({
+    nameIdx: uniqueIndex("workspaces_nameIdx").on(workspaces.name),
+  })
+);

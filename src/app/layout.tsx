@@ -1,9 +1,13 @@
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider, currentUser } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import "./globals.css";
 import { db } from "@/db/connection";
 import { migrate } from "drizzle-orm/mysql2/migrator";
 import { Toaster } from "@/components/ui/toaster";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { $user, setUser } from "@/stores/user";
+import { allTasks } from "nanostores";
 
 export const metadata = {
   title: "Matter",
@@ -18,6 +22,8 @@ export default async function RootLayout({
   // await migrate(db, {
   //   migrationsFolder: "src/drizzle",
   // });
+  $user.listen(() => {});
+  await allTasks();
 
   return (
     <ClerkProvider

@@ -1,5 +1,5 @@
 import { db } from "@/db/connection";
-import { workspace } from "@/db/schema";
+import { workspaces } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -11,10 +11,10 @@ export async function GET(
 
   const existingWorkspace = await db
     .select({
-      name: workspace.name,
+      name: workspaces.name,
     })
-    .from(workspace)
-    .where(eq(workspace.name, name))
+    .from(workspaces)
+    .where(eq(workspaces.name, name))
     .limit(1);
 
   if (existingWorkspace.length === 0) {

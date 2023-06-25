@@ -4,11 +4,10 @@ import {
   int,
   varchar,
   uniqueIndex,
-  serial,
   datetime,
 } from "drizzle-orm/mysql-core";
 
-export const user = mysqlTable(
+export const users = mysqlTable(
   "users",
   {
     id: int("id").autoincrement().primaryKey(),
@@ -22,16 +21,16 @@ export const user = mysqlTable(
   })
 );
 
-export type User = InferModel<typeof user>;
+export type User = InferModel<typeof users>;
 
-export const workspace = mysqlTable(
+export const workspaces = mysqlTable(
   "workspaces",
   {
     id: int("id").autoincrement().primaryKey(),
     name: varchar("name", { length: 100 }).notNull(),
     ownerId: int("owner_id")
       .notNull()
-      .references(() => user.id),
+      .references(() => users.id),
     createdAt: datetime("created_at").default(sql`NOW()`),
   },
   (workspaces) => ({

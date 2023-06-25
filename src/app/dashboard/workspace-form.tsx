@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "./ui/button";
+import { Button } from "../../components/ui/button";
 import {
   Form,
   FormControl,
@@ -12,14 +12,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
 import { insertWorkspaceSchema } from "@/models/workspace";
 import { useEffect, useState, useTransition } from "react";
 import { Loader2 } from "lucide-react";
-import { SheetClose } from "./ui/sheet";
+import { SheetClose } from "../../components/ui/sheet";
 import { useRouter } from "next/navigation";
-import { useToast } from "./ui/use-toast";
+import { useToast } from "../../components/ui/use-toast";
 
 export default function WorkspaceForm() {
   const router = useRouter();

@@ -1,15 +1,5 @@
-import WorkspaceForm from "@/components/workspace-form";
+import WorkspaceForm from "@/app/dashboard/workspace-form";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetContent,
@@ -22,10 +12,10 @@ import { TypographyH2, TypographyH4 } from "@/components/ui/typography";
 import { UserButton, currentUser } from "@clerk/nextjs";
 import { Plus } from "lucide-react";
 import { db } from "@/db/connection";
-import { user, workspace } from "@/db/schema";
+import { users, workspaces } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 
 const fetchWorkspaces = async () => {
   const signedInUser = await currentUser();
@@ -35,18 +25,18 @@ const fetchWorkspaces = async () => {
     NextResponse.redirect("/login");
   }
 
-  const users = await db.select().from(user).where(eq(user.email, email!));
+  const user = await db.select().from(users).where(eq(users.email, email!));
 
-  if (users.length === 0) {
+  if (user.length === 0) {
     NextResponse.redirect("/login");
   }
 
-  const workspaces = await db
+  const workspace = await db
     .select()
-    .from(workspace)
-    .where(eq(workspace.ownerId, users[0].id));
+    .from(workspaces)
+    .where(eq(workspaces.ownerId, user[0].id));
 
-  return workspaces;
+  return workspace;
 };
 
 export default async function Dashboard() {
@@ -92,8 +82,9 @@ export default async function Dashboard() {
                 key={ws.id}
                 variant="secondary"
                 className="min-w-[200px] min-h-[100px]"
+                asChild
               >
-                {ws.name}
+                <Link href={`/workspace/${ws.name}`}>{ws.name}</Link>
               </Button>
             ))}
           </div>

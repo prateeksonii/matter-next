@@ -1,5 +1,5 @@
 import { db } from "@/db/connection";
-import { user } from "@/db/schema";
+import { users } from "@/db/schema";
 import { UserCreatedEvent } from "@/model/dto/user-created-event";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
@@ -18,20 +18,20 @@ export async function POST(request: Request) {
 
     const existingUser = await db
       .select({
-        email: user.email,
+        email: users.email,
       })
-      .from(user)
-      .where(eq(user.email, emailAddress))
+      .from(users)
+      .where(eq(users.email, emailAddress))
       .limit(1);
 
     if (existingUser.length > 0) {
-      await db.update(user).set({
+      await db.update(users).set({
         clerkId: id,
         firstName: first_name,
         lastName: last_name,
       });
     } else {
-      await db.insert(user).values({
+      await db.insert(users).values({
         clerkId: id,
         firstName: first_name,
         lastName: last_name,

@@ -1,5 +1,5 @@
 import { db } from "@/db/connection";
-import { user, workspace } from "@/db/schema";
+import { users, workspaces } from "@/db/schema";
 import { insertWorkspaceSchema } from "@/models/workspace";
 import { auth, currentUser } from "@clerk/nextjs";
 import { eq } from "drizzle-orm";
@@ -26,12 +26,12 @@ export async function POST(request: Request) {
     );
   }
 
-  const users = await db.select().from(user).where(eq(user.email, email));
+  const users = await db.select().from(users).where(eq(users.email, email));
 
   if (users.length === 0) {
     return NextResponse.redirect("/login");
   }
-  const insertedWorkspace = await db.insert(workspace).values({
+  const insertedWorkspace = await db.insert(workspaces).values({
     name,
     ownerId: users[0].id!,
   });

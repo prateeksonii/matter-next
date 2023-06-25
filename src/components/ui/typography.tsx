@@ -23,3 +23,7 @@ export function TypographyH4({ children }: { children: React.ReactNode }) {
     </h4>
   );
 }
+
+export function TypographyLead({ children }: { children: React.ReactNode }) {
+  return <p className="text-xl text-muted-foreground">{children}</p>;
+}

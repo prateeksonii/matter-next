@@ -15,18 +15,28 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { insertWorkspaceSchema } from "@/models/workspace";
+import { useEffect, useState, useTransition } from "react";
+import { Loader2 } from "lucide-react";
+import { SheetClose } from "./ui/sheet";
+import { useRouter } from "next/navigation";
+import { useToast } from "./ui/use-toast";
 
 export default function WorkspaceForm() {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasErrors, setHasErrors] = useState<boolean>(true);
   const form = useForm<z.infer<typeof insertWorkspaceSchema>>({
     resolver: zodResolver(insertWorkspaceSchema),
     defaultValues: {
       name: "",
     },
   });
-  console.log(form.formState.errors);
+
+  const [, startTransition] = useTransition();
 
   async function onSubmit(values: z.infer<typeof insertWorkspaceSchema>) {
-    console.log("firsheret");
+    setLoading(true);
     const res = await fetch(`/api/workspaces`, {
       method: "post",
       headers: {
@@ -34,7 +44,26 @@ export default function WorkspaceForm() {
       },
       body: JSON.stringify(values),
     });
+    setLoading(false);
+
+    startTransition(() => {
+      toast({
+        title: values.name,
+        description: "Workspace created successfully",
+      });
+      router.refresh();
+    });
   }
+
+  useEffect(() => {
+    console.log(form.formState);
+
+    if (form.formState.isDirty && !form.formState.errors.name) {
+      setHasErrors(false);
+    } else {
+      setHasErrors(true);
+    }
+  }, [form.formState]);
 
   return (
     <Form {...form}>
@@ -55,7 +84,18 @@ export default function WorkspaceForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Create</Button>
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={loading || hasErrors}
+        >
+          {!loading && "Create"}
+          {loading && (
+            <>
+              Creating <Loader2 size={20} className="animate-spin ml-2" />
+            </>
+          )}
+        </Button>
       </form>
     </Form>
   );
